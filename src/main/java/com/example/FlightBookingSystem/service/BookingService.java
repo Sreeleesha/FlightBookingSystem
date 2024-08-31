@@ -43,7 +43,17 @@ public class BookingService {
                 .orElseThrow(() -> new com.example.FlightBookingSystem.exception.FlightNotFoundException("Flight not found with id " + createDTO.getFlightId()));
         Passenger passenger = passengerRepository.findById(createDTO.getPassengerId())
                 .orElseThrow(() -> new com.example.FlightBookingSystem.exception.PassengerNotFoundException("Passenger not found with id " + createDTO.getPassengerId()));
+        if (flight.getSeatsAvailable() < 1) {
+            throw new RuntimeException("Not enough seats available on flight with id " + createDTO.getFlightId());
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if (flight.getDepartureTime().minusHours(2).isBefore(now)) {
+            throw new RuntimeException("Cannot book a flight less than 2 hours before departure time");
+        }
 
+        flight.setSeatsAvailable(flight.getSeatsAvailable() - 1);
+        flightRepository.save(flight);
+        flightRepository.save(flight);
         Booking booking = new Booking();
         booking.setFlight(flight);
         booking.setPassenger(passenger);
