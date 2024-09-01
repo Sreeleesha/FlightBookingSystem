@@ -9,5 +9,5 @@ public class BookingCreateDTO {
     private Long passengerId;
     private LocalDateTime bookingDate;
 
-    // Getters and Setters
+
 }
