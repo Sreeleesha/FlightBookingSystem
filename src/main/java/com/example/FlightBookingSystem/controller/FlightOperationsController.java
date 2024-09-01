@@ -10,20 +10,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/flights")
 public class FlightOperationsController {
 
-        @Autowired
-        private FlightService flightService;
+    @Autowired
+    private FlightService flightService;
 
-        @PostMapping
-        public ResponseEntity<Flight> createFlight(@RequestBody Flight flight) {
-            Flight createdFlight = flightService.createFlight(flight);
-            return new ResponseEntity<>(createdFlight, HttpStatus.CREATED);
-        }
+    @PostMapping
+    public ResponseEntity<Flight> createFlight(@RequestBody Flight flight) {
+        Flight createdFlight = flightService.createFlight(flight);
+        return new ResponseEntity<>(createdFlight, HttpStatus.CREATED);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Flight> getFlight(@PathVariable Long id) {
@@ -32,37 +33,37 @@ public class FlightOperationsController {
                 .orElseGet(() -> ResponseEntity.notFound().build()); // If not present, return 404 Not Found
     }
 
-        @PutMapping("/{id}")
-        public ResponseEntity<Flight> updateFlight(@PathVariable Long id, @RequestBody Flight flight) {
-            if (!flightService.getFlightById(id).isPresent()) {
-                return ResponseEntity.notFound().build();
-            }
-            Flight updatedFlight = flightService.updateFlight(id, flight);
-            return ResponseEntity.ok(updatedFlight);
+    @PutMapping("/{id}")
+    public ResponseEntity<Flight> updateFlight(@PathVariable Long id, @RequestBody Flight flight) {
+        if (!flightService.getFlightById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
         }
-
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteFlight(@PathVariable Long id) {
-            if (!flightService.getFlightById(id).isPresent()) {
-                return ResponseEntity.notFound().build();
-            }
-            flightService.deleteFlight(id);
-            return ResponseEntity.noContent().build();
-        }
-
-        @GetMapping
-        public ResponseEntity<Page<Flight>> getFlights(
-                @RequestParam(defaultValue = "0") int page,
-                @RequestParam(defaultValue = "10") int size,
-                @RequestParam(defaultValue = "id,asc") String sort) {
-
-            Pageable pageable = PageRequest.of(page, size, sort.split(",")[1].equalsIgnoreCase("desc") ?
-                    Sort.by(sort.split(",")[0]).descending() :
-                    Sort.by(sort.split(",")[0]).ascending());
-            Page<Flight> flights = flightService.getFlights(pageable);
-            return ResponseEntity.ok(flights);
-        }
+        Flight updatedFlight = flightService.updateFlight(id, flight);
+        return ResponseEntity.ok(updatedFlight);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFlight(@PathVariable Long id) {
+        if (!flightService.getFlightById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        flightService.deleteFlight(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<Flight>> getFlights(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,asc") String sort) {
+
+        Pageable pageable = PageRequest.of(page, size, sort.split(",")[1].equalsIgnoreCase("desc") ?
+                Sort.by(sort.split(",")[0]).descending() :
+                Sort.by(sort.split(",")[0]).ascending());
+        Page<Flight> flights = flightService.getFlights(pageable);
+        return ResponseEntity.ok(flights);
+    }
+}
 
 
 

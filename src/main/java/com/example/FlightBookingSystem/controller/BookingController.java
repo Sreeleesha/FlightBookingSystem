@@ -26,19 +26,16 @@ public class BookingController {
     public BookingResponseDTO getBooking(@PathVariable Long id) {
         return bookingService.retrieveBooking(id);
     }
-
     @PutMapping("/{id}/cancel")
     public BookingResponseDTO cancelBooking(@PathVariable Long id) {
         return bookingService.cancelBooking(id);
     }
-
     @PutMapping("/{id}")
     public BookingResponseDTO updateBooking(
             @PathVariable Long id,
             @RequestBody BookingUpdateDTO updateDTO) {
         return bookingService.updateBooking(id, updateDTO);
     }
-
     @GetMapping
     public Page<BookingResponseDTO> listBookings(
             @RequestParam int page,

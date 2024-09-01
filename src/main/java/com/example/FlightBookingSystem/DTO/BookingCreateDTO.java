@@ -9,5 +9,4 @@ public class BookingCreateDTO {
     private Long passengerId;
     private LocalDateTime bookingDate;
 
-
 }

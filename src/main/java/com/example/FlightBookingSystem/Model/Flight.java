@@ -14,7 +14,6 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(unique = true)
     private String flightNumber;
     private String departureCity;
     private String arrivalCity;
