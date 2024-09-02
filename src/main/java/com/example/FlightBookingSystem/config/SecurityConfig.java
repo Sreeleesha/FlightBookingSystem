@@ -27,7 +27,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                        // .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/actuator/**").permitAll()
-                        .requestMatchers("/api/**").authenticated()
+                       // .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/flights/**").hasRole("ADMIN")
+                        .requestMatchers("/api/passengers/**").hasRole("USER")
+                        .requestMatchers("/api/bookings/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .httpBasic();

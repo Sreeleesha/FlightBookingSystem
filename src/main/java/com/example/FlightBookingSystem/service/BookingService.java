@@ -18,12 +18,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
 @Service
 public class BookingService {
@@ -36,6 +39,8 @@ public class BookingService {
 
     @Autowired
     private PassengerRepository passengerRepository;
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Transactional
     public BookingResponseDTO createBooking(BookingCreateDTO createDTO) {
@@ -52,7 +57,7 @@ public class BookingService {
         booking.setStatus(BookingStatus.CONFIRMED);
 
         Booking savedBooking = bookingRepository.save(booking);
-
+        kafkaTemplate.send(TOPIC, "Booking Created", savedBooking);
         return new BookingResponseDTO(
                 savedBooking.getId(),
                 savedBooking.getBookingDate(),
@@ -85,7 +90,7 @@ public class BookingService {
         booking.setStatus(BookingStatus.CANCELLED);
 
         Booking updatedBooking = bookingRepository.save(booking);
-
+        kafkaTemplate.send(TOPIC, "Booking Cancelled", updatedBooking);
         return new BookingResponseDTO(
                 updatedBooking.getId(),
                 updatedBooking.getBookingDate(),
@@ -112,7 +117,7 @@ public class BookingService {
         }
 
         Booking updatedBooking = bookingRepository.save(booking);
-
+        kafkaTemplate.send(TOPIC, "Booking Updated", updatedBooking);
         return new BookingResponseDTO(
                 updatedBooking.getId(),
                 updatedBooking.getBookingDate(),
